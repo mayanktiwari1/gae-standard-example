@@ -11,15 +11,16 @@ import java.util.Date;
  */
 public class Pipeline {
 	
-	private String projectName;
+	private String accountName;
 	private Date proposedStartDate;
 	private String contactperson;
 	
-	public String getProjectName() {
-		return projectName;
+	
+	public String getAccountName() {
+		return accountName;
 	}
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
 	}
 	public Date getProposedStartDate() {
 		return proposedStartDate;

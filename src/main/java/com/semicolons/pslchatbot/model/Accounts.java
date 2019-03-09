@@ -2,6 +2,7 @@ package com.semicolons.pslchatbot.model;
 
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -43,6 +44,8 @@ public class Accounts implements Serializable {
     private int quarter;
     
     private int revenue;
+    
+    private Date startDate;
 
 	public Long getId() {
 		return id;
@@ -98,6 +101,14 @@ public class Accounts implements Serializable {
 
 	public void setRevenue(int revenue) {
 		this.revenue = revenue;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
 	}    
    
 }
