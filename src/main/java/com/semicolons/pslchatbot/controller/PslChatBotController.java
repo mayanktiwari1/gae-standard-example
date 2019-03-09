@@ -156,7 +156,16 @@ public class PslChatBotController {
 					r1.setRevenue(ac.getRevenue());
 					list.add(r1);
 					break;
-
+				
+				case "risk":
+					
+					com.semicolons.pslchatbot.dtos.Risk risk = new com.semicolons.pslchatbot.dtos.Risk();
+					risk.setAccountName(ac.getAccountName());
+					risk.setContactPerson(ac.getContactPerson());
+					risk.setPosition(ac.getPosition());
+					risk.setQuarter(ac.getQuarter());
+					list.add(risk);
+					break;
 				default:
 					break;
 				}
