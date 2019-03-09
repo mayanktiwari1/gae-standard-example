@@ -1,33 +1,36 @@
 package com.semicolons.pslchatbot.controller;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.*;
-
-<<<<<<< HEAD
-import com.semicolons.pslchatbot.dtos.*;
-||||||| merged common ancestors
-=======
-import com.semicolons.pslchatbot.dtos.Response;
->>>>>>> 9dc7bec1e108f2dd6e94cbfb49f0183d91aa3bf9
-import com.semicolons.pslchatbot.exception.ResourceNotFoundException;
-import com.semicolons.pslchatbot.model.Accounts;
-import com.semicolons.pslchatbot.model.HumanResource;
-import com.semicolons.pslchatbot.model.Revenue;
-import com.semicolons.pslchatbot.repository.AccountsRepository;
-import com.semicolons.pslchatbot.repository.HumanResourceRepository;
-import com.semicolons.pslchatbot.repository.RevenueRepository;
-import com.semicolons.pslchatbot.repository.TicketRepository;
-
-import javax.validation.Valid;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.semicolons.pslchatbot.dtos.Response;
+import com.semicolons.pslchatbot.dtos.TicketDto;
+import com.semicolons.pslchatbot.exception.ResourceNotFoundException;
+import com.semicolons.pslchatbot.model.HumanResource;
+import com.semicolons.pslchatbot.model.Revenue;
+import com.semicolons.pslchatbot.model.Ticket;
+import com.semicolons.pslchatbot.repository.AccountsRepository;
+import com.semicolons.pslchatbot.repository.HumanResourceRepository;
+import com.semicolons.pslchatbot.repository.RevenueRepository;
+import com.semicolons.pslchatbot.repository.TicketRepository;
 
 @RestController
 @RequestMapping("/api")
@@ -99,12 +102,7 @@ public class PslChatBotController {
     	return accountStub(type);
     }
     
-    private Map<String, String> createResponse(String string) {
-		Map<String,String> map = new HashMap<>();
-		map.put("response", string);
-		return map;
-	}
-
+  
 	@GetMapping("/humanResource") 
     public Object getHumanResource(@RequestParam("type") String type, @RequestParam("quarter") Integer quarter,@RequestParam("location") String location) { 
     	
@@ -188,5 +186,45 @@ public class PslChatBotController {
 			break;
 		}
 		return list;
+	}
+	
+	@PostMapping("/raiseTicket") 
+    public Object raiseTicket(@RequestParam("department") String department, @RequestParam("priority") Integer priority,@RequestParam("description") String description) { 
+    	
+		Ticket ticket = new Ticket();
+		ticket.setDepartment(department);
+		ticket.setDescription(description);
+		ticket.setPriority(priority);
+		ticket.setRequestNumber(generateRequestNumber());
+		ticket.setTurnAroundtime(getTime(priority));
+		ticketRepository.save(ticket);
+		Response response = new Response();
+		List<Object> objList = new ArrayList<>();
+		TicketDto ticketDto = new TicketDto();
+		ticketDto.setRequestId(ticket.getRequestNumber());
+		ticketDto.setRequestTime(ticket.getTurnAroundtime());
+		objList.add(ticketDto);
+		response.setObject(objList);
+		response.setStatus(true);
+		return response;
+    }
+
+	private Integer getTime(Integer priority) {
+		if(priority.intValue()==1) {
+			return 1;
+		}else if(priority.intValue()==2) {
+			return 2;
+		}
+		return 3;
+	}
+
+	private String generateRequestNumber() {
+		
+		Random rnd = new Random();
+	    int number = rnd.nextInt(999999);
+
+	    // this will convert any number sequence into 6 character.
+	    return "REQ_" + String.format("%06d", number);
+	
 	}
 }
