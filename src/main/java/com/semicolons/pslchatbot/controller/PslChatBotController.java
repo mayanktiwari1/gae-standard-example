@@ -84,13 +84,14 @@ public class PslChatBotController {
 		
 		if(CollectionUtils.isEmpty(acs)) {
 			response.setStatus(false);
+			response.setErrorMessage("Information Not found");
 		} else {
 			response.setStatus(true);
 			
 			List<Object> list = new ArrayList<Object>();
 			
 			for(Accounts ac : acs) {
-				switch (type) {
+				switch (type.toLowerCase()) {
 				case "revenue":
 					
 					com.semicolons.pslchatbot.dtos.Revenue r1 = new com.semicolons.pslchatbot.dtos.Revenue();
