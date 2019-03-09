@@ -14,11 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.semicolons.pslchatbot.dtos.AvaialbleLeaveDto;
+import com.semicolons.pslchatbot.dtos.LeaveRequest;
 import com.semicolons.pslchatbot.dtos.Response;
 import com.semicolons.pslchatbot.dtos.TicketDto;
 import com.semicolons.pslchatbot.model.Accounts;
@@ -231,6 +233,73 @@ public class PslChatBotController {
 	
 		 Date sDate = getDate(startDate);
 		 Date eDate = getDate(endDate);
+		 
+		 if(null==sDate || eDate==null) {
+			 response.setStatus(false);
+			 response.setErrorMessage("Start date or end date cannot be derived.");
+			 return response;
+		 }
+		 
+		 long days = getDifferenceDays(sDate, eDate);
+		 
+		 if(days < 0) {
+			 response.setStatus(false);
+			 response.setErrorMessage("Start date cannot be greater than end date.");
+			 return response;
+		 }
+		 
+		 int balance = availableLeavesList.get(0).getBalance();
+		 
+		 if(balance < days) {
+			 response.setStatus(false);
+			 response.setErrorMessage("Leave cannot be applied as you have only " + balance + " " + leaveType + ".");
+			 return response;
+		 }
+		 
+		 balance = balance - ((int)days);
+		 
+		 AvailableLeaves availableLeaves = availableLeavesList.get(0);
+		 availableLeaves.setBalance(balance);
+		 availableLeavesRepository.save(availableLeaves);
+		 
+		 LeaveDetails leaveDetails = new LeaveDetails();
+		 leaveDetails.setDays((int)days);
+		 leaveDetails.setStartDate(sDate);
+		 leaveDetails.setEndDate(eDate);
+		 leaveDetails.setLeaveType(leaveType);
+		 
+		 leaveDetailsRepository.save(leaveDetails);
+		 
+		 response.setStatus(true);
+		 return response;
+		 
+		}catch(Exception e) {
+			response.setStatus(false);
+			response.setErrorMessage("Currently system is down. Please try after some time.");
+			e.printStackTrace();
+			return response;
+		}
+	}
+	
+	@PostMapping("/raiseLeave1") 
+    public Object raiseLeave1(@RequestBody LeaveRequest request){
+		Response response = new Response(); 
+		
+		try {
+			
+		String leaveType = request.getLeaveType();	
+		
+		List<AvailableLeaves> availableLeavesList = new ArrayList<>();
+		availableLeavesList = availableLeavesRepository.findByLeaveType(leaveType);
+		
+		if(CollectionUtils.isEmpty(availableLeavesList)) {
+			response.setStatus(false);
+			response.setErrorMessage(leaveType + " does not exists in system.");
+			return response;
+		}
+	
+		 Date sDate = getDate(request.getStartDate());
+		 Date eDate = getDate(request.getEndDate());
 		 
 		 if(null==sDate || eDate==null) {
 			 response.setStatus(false);
