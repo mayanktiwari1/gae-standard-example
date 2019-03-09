@@ -194,7 +194,7 @@ public class PslChatBotController {
     		}
     		
     		response.setObject(objList);
-    	
+    		response.setStatus(true);
     	}else {
     		response.setStatus(false);
     		response.setErrorMessage("No information found for leave " + leaveType);
