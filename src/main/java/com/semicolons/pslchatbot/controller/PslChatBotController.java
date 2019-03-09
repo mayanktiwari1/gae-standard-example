@@ -79,6 +79,10 @@ public class PslChatBotController {
     		response.setObject(objList);
     	}else {
     		response.setStatus(false);
+    		if(type=="head_count") {
+    			type = "Head Count";
+    		}
+    		
     		response.setErrorMessage("No information found about " + type + " for location " + location + " for quarter " + quarter);
     	}
     	
