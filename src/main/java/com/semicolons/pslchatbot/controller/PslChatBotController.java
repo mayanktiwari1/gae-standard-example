@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import com.semicolons.pslchatbot.dtos.Response;
 import com.semicolons.pslchatbot.exception.ResourceNotFoundException;
 import com.semicolons.pslchatbot.model.Accounts;
 import com.semicolons.pslchatbot.model.HumanResource;
@@ -115,22 +116,26 @@ public class PslChatBotController {
 	}
 
 	@GetMapping("/humanResource") 
-    public Map<String,String> getHumanResource(@RequestParam("type") String type, @RequestParam("quarter") Integer quarter,@RequestParam("location") String location) { 
+    public Object getHumanResource(@RequestParam("type") String type, @RequestParam("quarter") Integer quarter,@RequestParam("location") String location) { 
     	
-    	StringBuilder str = new StringBuilder(); 
     	List<HumanResource> humanResourceList = humanResourceRepository.findByTypeAndQuarterAndLocation(type, quarter, location);
+    	Response response = new Response();
     	if(!CollectionUtils.isEmpty(humanResourceList)) {
     		HumanResource humanResource = humanResourceList.get(0);
-    		if("head count".equalsIgnoreCase(type)) {
-    			str.append(type + " of location " + location + " for quarter " + quarter + " is " + humanResource.getPercentage());
-    		}else {
-    			str.append(type + " rate of location " + location + " for quarter " + quarter + " is " + humanResource.getPercentage() + " percantege");
-    		}
+    		humanResource.setLocation(humanResource.getLocation());
+    		humanResource.setPercentage(humanResource.getPercentage());
+    		humanResource.setQuarter(humanResource.getQuarter());
+    		humanResource.setType(humanResource.getType());
+    		response.setStatus(true);
+    		List<Object> objList = new ArrayList<>();
+    		objList.add(humanResource);
+    		response.setObject(objList);
     	}else {
-    		str.append("No information found about " + type + " for location " + location + " for quarter " + quarter);
+    		response.setStatus(false);
+    		response.setErrorMessage("No information found about " + type + " for location " + location + " for quarter " + quarter);
     	}
     	
-    	return createResponse(str.toString());
+    	return response;
     }
     
 }

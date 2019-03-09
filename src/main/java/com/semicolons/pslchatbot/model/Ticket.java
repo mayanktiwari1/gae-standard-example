@@ -4,9 +4,6 @@ package com.semicolons.pslchatbot.model;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
 import java.io.Serializable;
 
 @Entity
@@ -24,14 +21,16 @@ public class Ticket implements Serializable {
     private Long id;
 
 	@NotBlank
-    private String type;
+    private String department;
     
-    @NotNull
-    private String ticketId;
+    private Integer priority;
     
-    @NotBlank
     private String description;
 
+    private String requestNumber;
+    
+    private Integer turnAroundtime;
+    
     public Long getId() {
 		return id;
 	}
@@ -39,21 +38,21 @@ public class Ticket implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-    
-	public String getType() {
-		return type;
+
+	public String getDepartment() {
+		return department;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setDepartment(String department) {
+		this.department = department;
 	}
 
-	public String getTicketId() {
-		return ticketId;
+	public Integer getPriority() {
+		return priority;
 	}
 
-	public void setTicketId(String ticketId) {
-		this.ticketId = ticketId;
+	public void setPriority(Integer priority) {
+		this.priority = priority;
 	}
 
 	public String getDescription() {
@@ -64,8 +63,22 @@ public class Ticket implements Serializable {
 		this.description = description;
 	}
 
-	
+	public String getRequestNumber() {
+		return requestNumber;
+	}
 
+	public void setRequestNumber(String requestNumber) {
+		this.requestNumber = requestNumber;
+	}
+
+	public Integer getTurnAroundtime() {
+		return turnAroundtime;
+	}
+
+	public void setTurnAroundtime(Integer turnAroundtime) {
+		this.turnAroundtime = turnAroundtime;
+	}
+    
 	
     
     
