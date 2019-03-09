@@ -70,11 +70,19 @@ public class PslChatBotController {
     	List<HumanResource> humanResourceList = humanResourceRepository.findByTypeAndQuarterAndLocation(type, quarter, location);
     	Response response = new Response();
     	if(!CollectionUtils.isEmpty(humanResourceList)) {
+    		
+    		if(type=="head_count") {
+    			type = "Head Count";
+    		}
+    		if(location=="Santa_Clara") {
+    			type = "Santa Clara";
+    		}
+    		
     		HumanResource humanResource = humanResourceList.get(0);
-    		humanResource.setLocation(humanResource.getLocation());
+    		humanResource.setLocation(location);
     		humanResource.setPercentage(humanResource.getPercentage());
     		humanResource.setQuarter(humanResource.getQuarter());
-    		humanResource.setType(humanResource.getType());
+    		humanResource.setType(type);
     		response.setStatus(true);
     		List<Object> objList = new ArrayList<>();
     		objList.add(humanResource);
@@ -83,6 +91,9 @@ public class PslChatBotController {
     		response.setStatus(false);
     		if(type=="head_count") {
     			type = "Head Count";
+    		}
+    		if(location=="Santa_Clara") {
+    			type = "Santa Clara";
     		}
     		
     		response.setErrorMessage("No information found about " + type + " for location " + location + " for quarter " + quarter);
@@ -144,7 +155,7 @@ public class PslChatBotController {
 		
 	}
 	
-	@PostMapping("/raiseTicket") 
+	@GetMapping("/raiseTicket") 
     public Object raiseTicket(@RequestParam("department") String department, @RequestParam("priority") Integer priority,@RequestParam("description") String description) { 
     	
 		Ticket ticket = new Ticket();
@@ -215,7 +226,7 @@ public class PslChatBotController {
     	return response;
     }
 	
-	@PostMapping("/raiseLeave") 
+	@GetMapping("/raiseLeave") 
     public Object raiseLeave(@RequestParam("leaveType") String leaveType, @RequestParam("startDate") String startDate,@RequestParam("endDate") String endDate) { 
     	
 		Response response = new Response(); 
