@@ -6,23 +6,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,18 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.semicolons.pslchatbot.dtos.AvaialbleLeaveDto;
 import com.semicolons.pslchatbot.dtos.Response;
 import com.semicolons.pslchatbot.dtos.TicketDto;
-import com.semicolons.pslchatbot.exception.ResourceNotFoundException;
 import com.semicolons.pslchatbot.model.Accounts;
 import com.semicolons.pslchatbot.model.AvailableLeaves;
 import com.semicolons.pslchatbot.model.HumanResource;
 import com.semicolons.pslchatbot.model.LeaveDetails;
-import com.semicolons.pslchatbot.model.Revenue;
 import com.semicolons.pslchatbot.model.Ticket;
 import com.semicolons.pslchatbot.repository.AccountsRepository;
 import com.semicolons.pslchatbot.repository.AvailableLeavesRepository;
 import com.semicolons.pslchatbot.repository.HumanResourceRepository;
 import com.semicolons.pslchatbot.repository.LeaveDetailsRepository;
-import com.semicolons.pslchatbot.repository.RevenueRepository;
 import com.semicolons.pslchatbot.repository.TicketRepository;
 
 @RestController
@@ -49,69 +37,13 @@ import com.semicolons.pslchatbot.repository.TicketRepository;
 public class PslChatBotController {
 
 	
-	  @Autowired RevenueRepository revenueRepository;
 	  @Autowired AccountsRepository accountsRepository;
 	  @Autowired HumanResourceRepository humanResourceRepository;
 	  @Autowired TicketRepository ticketRepository;
 	  @Autowired AvailableLeavesRepository availableLeavesRepository;
 	  @Autowired LeaveDetailsRepository leaveDetailsRepository;
 	  
-	  // Get All Notes
-	  
-	  @GetMapping("/revenue") public List<Revenue> getAllNotes() { return
-	  revenueRepository.findAll(); }
-	  
-	  // Create a new Note
-	  
-	  @PostMapping("/revenue") public Revenue createNote(@Valid @RequestBody
-	  Revenue revenue) { return revenueRepository.save(revenue); }
-	  
-	  // Get a Single Note
-	  
-	  @GetMapping("/revenue/{id}") public Revenue getNoteById(@PathVariable(value =
-	  "id") Long revenueId) { return revenueRepository.findById(revenueId)
-	  .orElseThrow(() -> new ResourceNotFoundException("Revenue", "id",
-	  revenueId)); }
-	  
-	  // Update a Note
-	  
-	  @PutMapping("/revenue/{id}") public Revenue updateNote(@PathVariable(value =
-	  "id") Long revenueId,
-	  
-	  @Valid @RequestBody Revenue revenueDetails) {
-	  
-	  Revenue revenue = revenueRepository.findById(revenueId) .orElseThrow(() ->
-	  new ResourceNotFoundException("Revenue", "id", revenueId));
-	  
-	  revenue.setBusinessUnit(revenueDetails.getBusinessUnit());
-	  revenue.setQuarter(revenueDetails.getQuarter());
-	  revenue.setQuarterlyRevenue(revenueDetails.getQuarterlyRevenue());
-	  
-	  Revenue updateRevenue = revenueRepository.save(revenue); return
-	  updateRevenue; }
-	  
-	  // Delete a Note
-	  
-	  @DeleteMapping("/revenue/{id}") public ResponseEntity<?>
-	  deleteNote(@PathVariable(value = "id") Long revenueId) { Revenue note =
-	  revenueRepository.findById(revenueId) .orElseThrow(() -> new
-	  ResourceNotFoundException("Revenue", "id", revenueId));
-	  
-	  revenueRepository.delete(note);
-	  
-	  return ResponseEntity.ok().build(); }
-	 
-    
-    @GetMapping("/revenueAccounts")
-    public List<String> getRevenueAccounts() {
-    	List<String> list = new ArrayList<>();
-    	list.add("Thermofisher");
-    	list.add("Mobitv");
-    	list.add("Wells Fargo");
-    	return list;
-    }
-    
-    @GetMapping("/accountsInfo") 
+	 @GetMapping("/accountsInfo") 
     public Response getAccountsInfo(@RequestParam("type") String type, @RequestParam("quarter") int quarter, @RequestParam("count") Integer count) { 
     	List<Accounts> ac = accountsRepository.findByTypeAndQuarterOrderByPosition(type, quarter);
     	List<Accounts> sub = ac.subList(0, count);
@@ -186,57 +118,6 @@ public class PslChatBotController {
 		
 		return response;
 		
-	}
-	
-	private List<Object> getObjects(String type) {
-		List<Object> list = new ArrayList<Object>();
-		switch (type) {
-		case "revenue":
-			
-			com.semicolons.pslchatbot.dtos.Revenue r1 = new com.semicolons.pslchatbot.dtos.Revenue();
-			r1.setAccountName("Thermo1");
-			r1.setPosition(1);
-			r1.setQuarter(1);
-			r1.setRevenue(100000);
-			
-			com.semicolons.pslchatbot.dtos.Revenue r2 = new com.semicolons.pslchatbot.dtos.Revenue();
-			r2.setAccountName("Thermo2");
-			r2.setPosition(2);
-			r2.setQuarter(1);
-			r2.setRevenue(200000);
-			
-			com.semicolons.pslchatbot.dtos.Revenue r3 = new com.semicolons.pslchatbot.dtos.Revenue();
-			r3.setAccountName("Thermo3");
-			r3.setPosition(3);
-			r3.setQuarter(1);
-			r3.setRevenue(300000);
-			
-			com.semicolons.pslchatbot.dtos.Revenue r4 = new com.semicolons.pslchatbot.dtos.Revenue();
-			r4.setAccountName("Thermo4");
-			r4.setPosition(4);
-			r4.setQuarter(1);
-			r4.setRevenue(400000);
-			
-			com.semicolons.pslchatbot.dtos.Revenue r5 = new com.semicolons.pslchatbot.dtos.Revenue();
-			r5.setAccountName("Thermo5");
-			r5.setPosition(5);
-			r5.setQuarter(1);
-			r5.setRevenue(500000);
-			
-			list.add(r1);
-			list.add(r2);
-			list.add(r3);
-			list.add(r4);
-			list.add(r5);
-			
-			break;
-		case "risk":
-			
-			break;
-		default:
-			break;
-		}
-		return list;
 	}
 	
 	@PostMapping("/raiseTicket") 
