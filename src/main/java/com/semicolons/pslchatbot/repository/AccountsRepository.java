@@ -10,7 +10,7 @@ import com.semicolons.pslchatbot.model.Accounts;
 @Repository
 	public interface AccountsRepository extends JpaRepository<Accounts, Long> {
 
-	public List<Accounts> findByTypeOrderByPosition(String type);
+	public List<Accounts> findByTypeAndQuarterOrderByPosition(String type, int quarter);
 	
 }
 	

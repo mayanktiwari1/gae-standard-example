@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.semicolons.pslchatbot.dtos.Response;
 import com.semicolons.pslchatbot.dtos.TicketDto;
 import com.semicolons.pslchatbot.exception.ResourceNotFoundException;
+import com.semicolons.pslchatbot.model.Accounts;
 import com.semicolons.pslchatbot.model.HumanResource;
 import com.semicolons.pslchatbot.model.Revenue;
 import com.semicolons.pslchatbot.model.Ticket;
@@ -99,8 +100,10 @@ public class PslChatBotController {
     }
     
     @GetMapping("/accountsInfo") 
-    public Response getAccountsInfo(@RequestParam("type") String type, @RequestParam("count") Integer count) { 
-    	return accountStub(type);
+    public Response getAccountsInfo(@RequestParam("type") String type, @RequestParam("quarter") int quarter, @RequestParam("count") Integer count) { 
+    	List<Accounts> ac = accountsRepository.findByTypeAndQuarterOrderByPosition(type, quarter);
+    	System.out.println("fff"+ac);
+    	return getResponse(ac, type);
     }
     
   
@@ -127,12 +130,37 @@ public class PslChatBotController {
     	return response;
     }
     
-	private Response accountStub(String type) {
+	private Response getResponse(List<Accounts> acs, String type) {
 		
 		Response response = new Response();
-		response.setStatus(true);
 		
-		response.setObject(getObjects(type));
+		if(CollectionUtils.isEmpty(acs)) {
+			response.setStatus(false);
+		} else {
+			response.setStatus(true);
+			
+			List<Object> list = new ArrayList<Object>();
+			
+			for(Accounts ac : acs) {
+				switch (type) {
+				case "revenue":
+					
+					com.semicolons.pslchatbot.dtos.Revenue r1 = new com.semicolons.pslchatbot.dtos.Revenue();
+					r1.setAccountName(ac.getAccountName());
+					r1.setPosition(ac.getPosition());
+					r1.setQuarter(ac.getQuarter());
+					r1.setRevenue(ac.getRevenue());
+					list.add(r1);
+					break;
+
+				default:
+					break;
+				}
+				
+				
+			}
+			response.setObject(list);	
+		}
 		
 		return response;
 		

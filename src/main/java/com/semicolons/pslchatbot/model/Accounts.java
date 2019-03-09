@@ -1,13 +1,18 @@
 package com.semicolons.pslchatbot.model;
 
 
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import javax.persistence.*;
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import java.io.Serializable;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "accounts")
@@ -34,6 +39,10 @@ public class Accounts implements Serializable {
     
     @NotBlank
     private String contactPerson;
+    
+    private int quarter;
+    
+    private int revenue;
 
 	public Long getId() {
 		return id;
@@ -75,10 +84,20 @@ public class Accounts implements Serializable {
 		this.contactPerson = contactPerson;
 	}
 
-	
+	public int getQuarter() {
+		return quarter;
+	}
 
-	
-    
-    
+	public void setQuarter(int quarter) {
+		this.quarter = quarter;
+	}
+
+	public int getRevenue() {
+		return revenue;
+	}
+
+	public void setRevenue(int revenue) {
+		this.revenue = revenue;
+	}    
    
 }
