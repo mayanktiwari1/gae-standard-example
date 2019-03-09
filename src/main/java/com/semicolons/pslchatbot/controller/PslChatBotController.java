@@ -47,7 +47,14 @@ public class PslChatBotController {
 	  
 	 @GetMapping("/accountsInfo") 
     public Response getAccountsInfo(@RequestParam("type") String type, @RequestParam("quarter") int quarter, @RequestParam("count") Integer count) { 
-    	List<Accounts> ac = accountsRepository.findByTypeAndQuarterOrderByPosition(type, quarter);
+		 
+		 List<Accounts> ac = null;
+		if(type.equalsIgnoreCase("business_pipeline")) {
+			ac = accountsRepository.findByTypeAndQuarterOrderByStartDate(type, quarter);
+		} else {
+			ac = accountsRepository.findByTypeAndQuarterOrderByPosition(type, quarter);
+		}
+    	
     	if(count < ac.size()) {
     		List<Accounts> sub = ac.subList(0, count);
     		return getResponse(sub, type);
@@ -118,15 +125,13 @@ public class PslChatBotController {
 					
 					com.semicolons.pslchatbot.dtos.Pipeline pipeline = new com.semicolons.pslchatbot.dtos.Pipeline();
 					pipeline.setContactperson(ac.getContactPerson());
-					pipeline.setProjectName(ac.getContactPerson());
-				//	pipeline.setProposedStartDate();
+					pipeline.setAccountName(ac.getAccountName());
+					pipeline.setProposedStartDate(ac.getStartDate());
 					list.add(pipeline);
 					
 				default:
 					break;
 				}
-				
-				
 			}
 			response.setObject(list);	
 		}

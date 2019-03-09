@@ -12,6 +12,7 @@ import com.semicolons.pslchatbot.model.Accounts;
 
 	public List<Accounts> findByTypeAndQuarterOrderByPosition(String type, int quarter);
 	
+	public List<Accounts> findByTypeAndQuarterOrderByStartDate(String type, int quarter);
 }
 	
 
