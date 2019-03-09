@@ -107,6 +107,12 @@ public class PslChatBotController {
 					risk.setQuarter(ac.getQuarter());
 					list.add(risk);
 					break;
+				
+				case "business_pipeline":
+					
+					com.semicolons.pslchatbot.dtos.Pipeline pipeline = new com.semicolons.pslchatbot.dtos.Pipeline();
+					list.add(pipeline);
+					
 				default:
 					break;
 				}
