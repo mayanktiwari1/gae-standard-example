@@ -26,10 +26,12 @@ import com.semicolons.pslchatbot.dtos.Response;
 import com.semicolons.pslchatbot.dtos.TicketDto;
 import com.semicolons.pslchatbot.exception.ResourceNotFoundException;
 import com.semicolons.pslchatbot.model.Accounts;
+import com.semicolons.pslchatbot.model.AvailableLeaves;
 import com.semicolons.pslchatbot.model.HumanResource;
 import com.semicolons.pslchatbot.model.Revenue;
 import com.semicolons.pslchatbot.model.Ticket;
 import com.semicolons.pslchatbot.repository.AccountsRepository;
+import com.semicolons.pslchatbot.repository.AvailableLeavesRepository;
 import com.semicolons.pslchatbot.repository.HumanResourceRepository;
 import com.semicolons.pslchatbot.repository.RevenueRepository;
 import com.semicolons.pslchatbot.repository.TicketRepository;
@@ -43,6 +45,7 @@ public class PslChatBotController {
 	  @Autowired AccountsRepository accountsRepository;
 	  @Autowired HumanResourceRepository humanResourceRepository;
 	  @Autowired TicketRepository ticketRepository;
+	  @Autowired AvailableLeavesRepository availableLeavesRepository;
 	  
 	  // Get All Notes
 	  
@@ -256,4 +259,35 @@ public class PslChatBotController {
 	    return "REQ_" + String.format("%06d", number);
 	
 	}
+	
+	@GetMapping("/getAvailableLeaves") 
+    public Object getAvailableLeaves(@RequestParam(value = "", required=false)  String leaveType) { 
+    	
+		List<AvailableLeaves> availableLeavesList = new ArrayList<>();
+		if("".equals(leaveType)) {
+			availableLeavesList = availableLeavesRepository.findAll();
+		}else {
+			availableLeavesList = availableLeavesRepository.findByLeaveType(leaveType);
+		}
+		
+		Response response = new Response();
+		AvailableLeaves availableLeaves = null;
+		List<Object> objList = new ArrayList<>();
+    	if(!CollectionUtils.isEmpty(availableLeavesList)) {
+    		for(AvailableLeaves availableLeavesDb : availableLeavesList ) {
+    			availableLeaves = new  AvailableLeaves();
+    			availableLeaves.setLeaveType(availableLeavesDb.getLeaveType());
+    			availableLeaves.setBalance(availableLeavesDb.getBalance());
+    			objList.add(availableLeaves);
+    		}
+    		
+    		response.setObject(objList);
+    	
+    	}else {
+    		response.setStatus(false);
+    		response.setErrorMessage("No information found for leave " + leaveType);
+    	}
+    	
+    	return response;
+    }
 }
