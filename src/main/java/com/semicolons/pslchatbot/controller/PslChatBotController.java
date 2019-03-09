@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import com.semicolons.pslchatbot.dtos.*;
 import com.semicolons.pslchatbot.exception.ResourceNotFoundException;
 import com.semicolons.pslchatbot.model.Accounts;
 import com.semicolons.pslchatbot.model.HumanResource;
@@ -89,23 +90,8 @@ public class PslChatBotController {
     }
     
     @GetMapping("/accountsInfo") 
-    public Map<String,String> getAccountsInfo(@RequestParam("type") String type, @RequestParam("count") Integer count) { 
-    	
-    	StringBuilder str = new StringBuilder(); 
-    	List<Accounts> accountsList = accountsRepository.findByTypeOrderByPosition(type);
-    	if(!CollectionUtils.isEmpty(accountsList)) {
-    		int pos = count > accountsList.size() ? accountsList.size() : count; 
-    		accountsList =  accountsList.subList(0, pos);
-    		str.append("Top " + type + " accounts are ");
-    		accountsList.stream().forEach(x -> {
-    			str.append(x.getAccountName() + " with contact person " + x.getContactPerson() + " , ");
-    		});
-    		str.setLength(str.length() - 3);
-    	}else {
-    		str.append("No information found for " + type + " accounts");
-    	}
-    	
-    	return createResponse(str.toString());
+    public Response getAccountsInfo(@RequestParam("type") String type, @RequestParam("count") Integer count) { 
+    	return accountStub(type);
     }
     
     private Map<String, String> createResponse(String string) {
@@ -116,7 +102,6 @@ public class PslChatBotController {
 
 	@GetMapping("/humanResource") 
     public Map<String,String> getHumanResource(@RequestParam("type") String type, @RequestParam("quarter") Integer quarter,@RequestParam("location") String location) { 
-    	
     	StringBuilder str = new StringBuilder(); 
     	List<HumanResource> humanResourceList = humanResourceRepository.findByTypeAndQuarterAndLocation(type, quarter, location);
     	if(!CollectionUtils.isEmpty(humanResourceList)) {
@@ -133,4 +118,65 @@ public class PslChatBotController {
     	return createResponse(str.toString());
     }
     
+	private Response accountStub(String type) {
+		
+		Response response = new Response();
+		response.setStatus(true);
+		
+		response.setObject(getObjects(type));
+		
+		return response;
+		
+	}
+	
+	private List<Object> getObjects(String type) {
+		List<Object> list = new ArrayList<Object>();
+		switch (type) {
+		case "revenue":
+			
+			com.semicolons.pslchatbot.dtos.Revenue r1 = new com.semicolons.pslchatbot.dtos.Revenue();
+			r1.setAccountName("Thermo1");
+			r1.setPosition(1);
+			r1.setQuarter(1);
+			r1.setRevenue(100000);
+			
+			com.semicolons.pslchatbot.dtos.Revenue r2 = new com.semicolons.pslchatbot.dtos.Revenue();
+			r2.setAccountName("Thermo2");
+			r2.setPosition(2);
+			r2.setQuarter(1);
+			r2.setRevenue(200000);
+			
+			com.semicolons.pslchatbot.dtos.Revenue r3 = new com.semicolons.pslchatbot.dtos.Revenue();
+			r3.setAccountName("Thermo3");
+			r3.setPosition(3);
+			r3.setQuarter(1);
+			r3.setRevenue(300000);
+			
+			com.semicolons.pslchatbot.dtos.Revenue r4 = new com.semicolons.pslchatbot.dtos.Revenue();
+			r4.setAccountName("Thermo4");
+			r4.setPosition(4);
+			r4.setQuarter(1);
+			r4.setRevenue(400000);
+			
+			com.semicolons.pslchatbot.dtos.Revenue r5 = new com.semicolons.pslchatbot.dtos.Revenue();
+			r5.setAccountName("Thermo5");
+			r5.setPosition(5);
+			r5.setQuarter(1);
+			r5.setRevenue(500000);
+			
+			list.add(r1);
+			list.add(r2);
+			list.add(r3);
+			list.add(r4);
+			list.add(r5);
+			
+			break;
+		case "risk":
+			
+			break;
+		default:
+			break;
+		}
+		return list;
+	}
 }
