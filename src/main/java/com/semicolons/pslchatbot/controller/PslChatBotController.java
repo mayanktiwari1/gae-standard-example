@@ -102,8 +102,9 @@ public class PslChatBotController {
     @GetMapping("/accountsInfo") 
     public Response getAccountsInfo(@RequestParam("type") String type, @RequestParam("quarter") int quarter, @RequestParam("count") Integer count) { 
     	List<Accounts> ac = accountsRepository.findByTypeAndQuarterOrderByPosition(type, quarter);
-    	System.out.println("fff"+ac);
-    	return getResponse(ac, type);
+    	List<Accounts> sub = ac.subList(0, count);
+    	
+    	return getResponse(sub, type);
     }
     
   
