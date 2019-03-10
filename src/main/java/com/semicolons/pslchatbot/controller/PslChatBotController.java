@@ -75,7 +75,7 @@ public class PslChatBotController {
     			type = "Head Count";
     		}
     		if(location=="Santa_Clara") {
-    			type = "Santa Clara";
+    			location = "Santa Clara";
     		}
     		
     		HumanResource humanResource = humanResourceList.get(0);
@@ -92,8 +92,8 @@ public class PslChatBotController {
     		if(type=="head_count") {
     			type = "Head Count";
     		}
-    		if(location=="Santa_Clara") {
-    			type = "Santa Clara";
+    		if(location.contains("Santa_Clara")) {
+    			location = "Santa Clara";
     		}
     		
     		response.setErrorMessage("No information found about " + type + " for location " + location + " for quarter " + quarter);
